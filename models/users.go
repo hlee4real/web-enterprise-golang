@@ -1,26 +1,23 @@
 package models
 
 import (
-	"context"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
 type UsersModel struct {
-	Username     string    `bson:"username" json:"username"`
-	Password     string    `bson:"password" json:"password"`
-	DateOfBirth  string    `bson:"date_of_birth" json:"date_of_birth"`
-	Mobile       string    `bson:"mobile" json:"mobile"`
-	Role         string    `bson:"role" json:"role"`
-	Image        string    `bson:"image" json:"image"`
-	DepartmentId string    `bson:"department_id" json:"department_id"`
-	CreatedAt    time.Time `bson:"created_at" json:"created_at"`
-	UpdatedAt    time.Time `bson:"updated_at" json:"updated_at"`
-}
-
-func (u *UsersModel) SaveUser() (*UsersModel, error) {
-	_, err := GetUserCollection().InsertOne(context.Background(), u)
-	if err != nil {
-		return nil, err
-	}
-	return u, nil
+	ID           primitive.ObjectID `bson:"_id" json:"_id"`
+	Username     *string            `bson:"username" json:"username"`
+	FirstName    *string            `bson:"first_name" json:"first_name"`
+	LastName     *string            `bson:"last_name" json:"last_name"`
+	Password     *string            `bson:"password" json:"password"`
+	Token        *string            `bson:"token" json:"token"`
+	RefreshToken *string            `bson:"refresh_token" json:"refresh_token"`
+	Mobile       string             `bson:"mobile" json:"mobile"`
+	Role         string             `bson:"role" json:"role"`
+	Image        string             `bson:"image" json:"image"`
+	DepartmentId string             `bson:"department_id" json:"department_id"`
+	CreatedAt    time.Time          `bson:"created_at" json:"created_at"`
+	UpdatedAt    time.Time          `bson:"updated_at" json:"updated_at"`
+	UserID       string             `bson:"user_id" json:"user_id"`
 }
