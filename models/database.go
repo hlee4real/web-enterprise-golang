@@ -3,7 +3,6 @@ package models
 import (
 	"context"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -13,47 +12,6 @@ func ConnectDB() (*mongo.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	//set unique for username and index it in database
-	mongoClient.Database("enterpriseweb").Collection("users").Indexes().CreateOne(context.Background(), mongo.IndexModel{
-		Keys: bson.D{{
-			Key:   "username",
-			Value: 1,
-		}},
-		Options: options.Index().SetUnique(true),
-	})
-
-	mongoClient.Database("enterpriseweb").Collection("departments").Indexes().CreateOne(context.Background(), mongo.IndexModel{
-		Keys: bson.D{{
-			Key:   "name",
-			Value: 1,
-		}},
-		Options: options.Index().SetUnique(true),
-	})
-
-	mongoClient.Database("enterpriseweb").Collection("documents").Indexes().CreateOne(context.Background(), mongo.IndexModel{
-		Keys: bson.D{{
-			Key:   "filename",
-			Value: 1,
-		}},
-		Options: options.Index().SetUnique(true),
-	})
-
-	mongoClient.Database("enterpriseweb").Collection("categories").Indexes().CreateOne(context.Background(), mongo.IndexModel{
-		Keys: bson.D{{
-			Key:   "name",
-			Value: 1,
-		}},
-		Options: options.Index().SetUnique(true),
-	})
-
-	mongoClient.Database("enterpriseweb").Collection("ideas").Indexes().CreateOne(context.Background(), mongo.IndexModel{
-		Keys: bson.D{{
-			Key:   "title",
-			Value: 1,
-		}},
-		Options: options.Index().SetUnique(true),
-	})
 
 	return mongoClient, nil
 }

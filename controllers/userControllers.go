@@ -44,7 +44,6 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
 
 func SignUp() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		var user models.UsersModel
@@ -113,5 +112,77 @@ func Login() gin.HandlerFunc {
 		token, refreshToken, _ := helper.GenerateAllTokens(*foundUser.Username, *foundUser.FirstName, *foundUser.LastName, foundUser.UserID)
 		helper.UpdateAllTokens(token, refreshToken, foundUser.UserID)
 		c.JSON(http.StatusOK, gin.H{"user": foundUser})
+	}
+}
+
+func UpdateUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		var user models.UsersModel
+		if err := c.BindJSON(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		validationErr := validate.Struct(user)
+		if validationErr != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
+			return
+		}
+		user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		result, err := userCollection.UpdateOne(ctx, bson.M{"_id": user.ID}, bson.M{"$set": user})
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"result": result})
+	}
+}
+
+func DeleteUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		id := c.Param("_id")
+		result, err := userCollection.DeleteOne(ctx, bson.M{"_id": id})
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"result": result})
+	}
+}
+
+func GetUserById() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		var user models.UsersModel
+		id := c.Param("_id")
+		if err := userCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&user); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"user": user})
+	}
+}
+
+func GetAllUsers() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		var users []models.UsersModel
+		cursor, err := userCollection.Find(ctx, bson.M{})
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		defer cursor.Close(ctx)
+		for cursor.Next(ctx) {
+			var user models.UsersModel
+			cursor.Decode(&user)
+			users = append(users, user)
+		}
+		c.JSON(http.StatusOK, gin.H{"users": users})
 	}
 }
