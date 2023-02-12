@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"time"
 	"web-enterprise-backend/models"
@@ -20,12 +21,14 @@ func CreateCategory() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
-		_, err := categoryCollection.InsertOne(ctx, category)
+		category.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		category.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		result, err := categoryCollection.InsertOne(ctx, category)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
-		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: category})
+		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: result})
 	}
 }
 
@@ -35,7 +38,13 @@ func GetCategoryById() gin.HandlerFunc {
 		defer cancel()
 		id := c.Param("id")
 		var category models.CategoriesModel
-		err := categoryCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&category)
+		objectId, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
+			return
+		}
+
+		err = categoryCollection.FindOne(ctx, bson.M{"_id": objectId}).Decode(&category)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
@@ -67,20 +76,22 @@ func UpdateCategory() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		id := c.Param("_id")
+		id := c.Param("id")
+		objectId, _ := primitive.ObjectIDFromHex(id)
 		var category models.CategoriesModel
 		if err := c.BindJSON(&category); err != nil {
 			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
-
+		category.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		category.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		result, err := categoryCollection.UpdateOne(ctx, bson.M{"_id": id}, bson.M{"$set": category})
+
+		_, err := categoryCollection.UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": category})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
-		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: result})
+		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: category})
 	}
 }
 
@@ -88,12 +99,13 @@ func DeleteCategory() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		id := c.Param("_id")
-		result, err := categoryCollection.DeleteOne(ctx, bson.M{"_id": id})
+		id := c.Param("id")
+		objectId, _ := primitive.ObjectIDFromHex(id)
+		_, err := categoryCollection.DeleteOne(ctx, bson.M{"_id": objectId})
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
-		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: result})
+		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: "Delete Success"})
 	}
 }

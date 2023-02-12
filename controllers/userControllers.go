@@ -120,6 +120,8 @@ func UpdateUser() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		var user models.UsersModel
+		id := c.Param("id")
+		objectId, _ := primitive.ObjectIDFromHex(id)
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -130,7 +132,7 @@ func UpdateUser() gin.HandlerFunc {
 			return
 		}
 		user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		result, err := userCollection.UpdateOne(ctx, bson.M{"_id": user.ID}, bson.M{"$set": user})
+		result, err := userCollection.UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": user})
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -143,8 +145,9 @@ func DeleteUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		id := c.Param("_id")
-		result, err := userCollection.DeleteOne(ctx, bson.M{"_id": id})
+		id := c.Param("id")
+		objectId, _ := primitive.ObjectIDFromHex(id)
+		result, err := userCollection.DeleteOne(ctx, bson.M{"_id": objectId})
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -158,8 +161,9 @@ func GetUserById() gin.HandlerFunc {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		var user models.UsersModel
-		id := c.Param("_id")
-		if err := userCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&user); err != nil {
+		id := c.Param("id")
+		objectId, _ := primitive.ObjectIDFromHex(id)
+		if err := userCollection.FindOne(ctx, bson.M{"_id": objectId}).Decode(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}

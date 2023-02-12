@@ -16,6 +16,7 @@ func main() {
 	router.Use(gin.Logger())
 
 	routes.UserRoutes(router)
+	routes.CategoryRoutes(router)
 	router.Use(middleware.Authentication())
 
 	router.GET("/api-v1", func(c *gin.Context) {

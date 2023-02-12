@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -28,6 +29,7 @@ func GetUserCollection() *mongo.Collection {
 func GetCategoryCollection() *mongo.Collection {
 	mongoClient, err := ConnectDB()
 	if err != nil {
+		fmt.Println("error Database")
 		return nil
 	}
 
