@@ -13,5 +13,4 @@ type IdeasModel struct {
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 	UserId    string    `bson:"user_id" json:"user_id"`
-	Comment   string    `bson:"comment" json:"comment"`
 }

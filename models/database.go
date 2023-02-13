@@ -62,3 +62,12 @@ func GetIdeaCollection() *mongo.Collection {
 
 	return mongoClient.Database("enterpriseweb").Collection("ideas")
 }
+
+func GetCommentCollection() *mongo.Collection {
+	mongoClient, err := ConnectDB()
+	if err != nil {
+		return nil
+	}
+
+	return mongoClient.Database("enterpriseweb").Collection("comments")
+}

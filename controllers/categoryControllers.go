@@ -23,12 +23,12 @@ func CreateCategory() gin.HandlerFunc {
 		}
 		category.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		category.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-		result, err := categoryCollection.InsertOne(ctx, category)
+		_, err := categoryCollection.InsertOne(ctx, category)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
-		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: result})
+		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: category})
 	}
 }
 

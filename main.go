@@ -17,19 +17,11 @@ func main() {
 
 	routes.UserRoutes(router)
 	routes.CategoryRoutes(router)
+	routes.DocumentRoutes(router)
+	routes.DepartmentRoutes(router)
+	routes.IdeaRoutes(router)
+	routes.CommentRoutes(router)
 	router.Use(middleware.Authentication())
-
-	router.GET("/api-v1", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "access grant for api-v1",
-		})
-	})
-
-	router.GET("/api-v2", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "access grant for api-v2",
-		})
-	})
 
 	router.Run(":8080")
 }
