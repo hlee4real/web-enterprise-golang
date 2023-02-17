@@ -10,6 +10,8 @@ type IdeasModel struct {
 	Content   string    `bson:"content" json:"content"`
 	Category  string    `bson:"category" json:"category"`
 	Views     int       `bson:"views" json:"views"`
+	UpVote    int       `bson:"up_vote" json:"up_vote"`
+	DownVote  int       `bson:"down_vote" json:"down_vote"`
 	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at" json:"updated_at"`
 	UserId    string    `bson:"user_id" json:"user_id"`

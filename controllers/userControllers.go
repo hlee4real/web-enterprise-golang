@@ -80,12 +80,12 @@ func SignUp() gin.HandlerFunc {
 		token, refreshToken, _ := helper.GenerateAllTokens(*user.Username, *user.FirstName, *user.LastName, user.UserID)
 		user.Token = &token
 		user.RefreshToken = &refreshToken
-		resultInsertionNumber, insertErr := userCollection.InsertOne(ctx, user)
+		_, insertErr := userCollection.InsertOne(ctx, user)
 		if insertErr != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": insertErr.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"result": resultInsertionNumber})
+		c.JSON(http.StatusOK, gin.H{"result": user})
 	}
 }
 
