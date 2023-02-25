@@ -11,4 +11,6 @@ func IdeaRoutes(incomingRoutes *gin.Engine) {
 	incomingRoutes.POST("/ideas", controllers.CreateIdea())
 	incomingRoutes.PUT("/ideas/:id", controllers.UpdateIdea())
 	incomingRoutes.DELETE("/ideas/:id", controllers.DeleteIdea())
+	incomingRoutes.GET("/most-viewed-ideas", controllers.GetMostViewedIdeas())
+	incomingRoutes.GET("/most-upvote-ideas", controllers.GetMostUpvoteIdeas())
 }

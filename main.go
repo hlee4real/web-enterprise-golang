@@ -13,6 +13,8 @@ func main() {
 		panic("Error loading .env file")
 	}
 	router := gin.Default()
+	//debug mode
+	gin.SetMode(gin.DebugMode)
 	router.Use(gin.Logger())
 
 	routes.UserRoutes(router)
@@ -21,6 +23,7 @@ func main() {
 	routes.DepartmentRoutes(router)
 	routes.IdeaRoutes(router)
 	routes.CommentRoutes(router)
+	routes.UploadFileRoutes(router)
 	router.Use(middleware.Authentication())
 
 	router.Run(":8080")

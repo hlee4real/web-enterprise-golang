@@ -77,7 +77,7 @@ func SignUp() gin.HandlerFunc {
 		user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		user.ID = primitive.NewObjectID()
 		user.UserID = user.ID.Hex()
-		token, refreshToken, _ := helper.GenerateAllTokens(*user.Username, *user.FirstName, *user.LastName, user.UserID)
+		token, refreshToken, _ := helper.GenerateAllTokens(*user.Username, *user.FirstName, *user.LastName, user.UserID, user.Role)
 		user.Token = &token
 		user.RefreshToken = &refreshToken
 		_, insertErr := userCollection.InsertOne(ctx, user)
@@ -109,7 +109,7 @@ func Login() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": msg})
 			return
 		}
-		token, refreshToken, _ := helper.GenerateAllTokens(*foundUser.Username, *foundUser.FirstName, *foundUser.LastName, foundUser.UserID)
+		token, refreshToken, _ := helper.GenerateAllTokens(*foundUser.Username, *foundUser.FirstName, *foundUser.LastName, foundUser.UserID, foundUser.Role)
 		helper.UpdateAllTokens(token, refreshToken, foundUser.UserID)
 		c.JSON(http.StatusOK, gin.H{"user": foundUser})
 	}

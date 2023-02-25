@@ -6,7 +6,6 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"os"
 	"time"
@@ -18,18 +17,20 @@ type SignedDetails struct {
 	FirstName string
 	LastName  string
 	Uid       string
+	Role      string
 	jwt.StandardClaims
 }
 
-var userCollection *mongo.Collection = models.GetUserCollection()
-var SECRET_KEY string = os.Getenv("SECRET_KEY")
+var userCollection = models.GetUserCollection()
+var SECRET_KEY = os.Getenv("SECRET_KEY")
 
-func GenerateAllTokens(username string, firstName string, lastName string, uid string) (signedToken string, signedRefreshToken string, err error) {
+func GenerateAllTokens(username string, firstName string, lastName string, uid string, role string) (signedToken string, signedRefreshToken string, err error) {
 	claims := &SignedDetails{
 		Username:  username,
 		FirstName: firstName,
 		LastName:  lastName,
 		Uid:       uid,
+		Role:      role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
 		},
