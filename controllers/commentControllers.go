@@ -21,6 +21,7 @@ func CreateComment() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
+		comment.ID = primitive.NewObjectID()
 		comment.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		comment.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		_, err := commentCollection.InsertOne(ctx, comment)

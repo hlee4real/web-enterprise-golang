@@ -21,6 +21,7 @@ func CreateDepartment() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
+		department.ID = primitive.NewObjectID()
 		department.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		department.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		_, err := departmentCollection.InsertOne(ctx, department)
