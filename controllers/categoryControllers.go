@@ -84,6 +84,7 @@ func UpdateCategory() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
+		category.ID = objectId
 		category.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		category.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 

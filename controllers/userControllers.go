@@ -131,7 +131,14 @@ func UpdateUser() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
 			return
 		}
+		user.ID = objectId
+		token, refreshToken, _ := helper.GenerateAllTokens(*user.Username, *user.FirstName, *user.LastName, user.UserID, user.Role)
+		user.Token = &token
+		user.RefreshToken = &refreshToken
+		password := HashPassword(*user.Password)
+		user.Password = &password
 		user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+		user.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		result, err := userCollection.UpdateOne(ctx, bson.M{"_id": objectId}, bson.M{"$set": user})
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

@@ -106,6 +106,7 @@ func UpdateIdea() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
+		idea.ID = objectId
 		idea.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		idea.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
