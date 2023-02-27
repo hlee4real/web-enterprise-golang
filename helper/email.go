@@ -7,13 +7,7 @@ import (
 	"os"
 )
 
-type Email struct {
-	Subject  string
-	Body     string
-	Receiver string
-}
-
-func SendEmail(email Email) error {
+func SendEmail(receiver string, subject string, body string) error {
 	err := godotenv.Load()
 	password := os.Getenv("EMAIL_PASSWORD")
 	if err != nil {
@@ -22,9 +16,9 @@ func SendEmail(email Email) error {
 	}
 	m := gomail.NewMessage()
 	m.SetHeader("From", "hoanglh1311@yandex.com")
-	m.SetHeader("To", email.Receiver)
-	m.SetHeader("Subject", email.Subject)
-	m.SetBody("text/html", email.Body)
+	m.SetHeader("To", receiver)
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/html", body)
 	d := gomail.NewDialer("smtp.yandex.com", 465, "hoanglh1311@yandex.com", password)
 	if err = d.DialAndSend(m); err != nil {
 		fmt.Println(err)

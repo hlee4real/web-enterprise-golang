@@ -34,16 +34,13 @@ func CreateIdea() gin.HandlerFunc {
 			return
 		}
 		//send email to manager
-		email := new(helper.Email)
 		emailAddress := helper.GetManagerEmail(idea.Department)
-		if emailAddress != "" {
+		if emailAddress == "" {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
 		}
-		email.Receiver = emailAddress
-		email.Subject = fmt.Sprintf("New idea: %s", idea.Title)
-		email.Body = fmt.Sprintf("%s", idea.Content)
-		err = helper.SendEmail(*email)
+		title := fmt.Sprint("New idea with title: ", idea.Title)
+		err = helper.SendEmail(emailAddress, title, idea.Content)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return
