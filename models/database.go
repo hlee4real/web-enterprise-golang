@@ -71,3 +71,12 @@ func GetCommentCollection() *mongo.Collection {
 
 	return mongoClient.Database("enterpriseweb").Collection("comments")
 }
+
+func GetUserVoteCollection() *mongo.Collection {
+	mongoClient, err := ConnectDB()
+	if err != nil {
+		return nil
+	}
+
+	return mongoClient.Database("enterpriseweb").Collection("uservotes")
+}
