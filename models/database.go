@@ -80,3 +80,12 @@ func GetUserVoteCollection() *mongo.Collection {
 
 	return mongoClient.Database("enterpriseweb").Collection("uservotes")
 }
+
+func GetClosureCollection() *mongo.Collection {
+	mongoClient, err := ConnectDB()
+	if err != nil {
+		return nil
+	}
+
+	return mongoClient.Database("enterpriseweb").Collection("closures")
+}

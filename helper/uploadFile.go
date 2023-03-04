@@ -25,7 +25,7 @@ func UploadFile(c *gin.Context) {
 		})
 		return
 	}
-	if err := c.SaveUploadedFile(file, fmt.Sprintf("./uploads/%s", file.Filename)); err != nil {
+	if err := c.SaveUploadedFile(file, fmt.Sprintf("file/%s", file.Filename)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": err.Error(),
 		})

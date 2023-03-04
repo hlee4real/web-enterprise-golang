@@ -25,6 +25,7 @@ func main() {
 	routes.CommentRoutes(router)
 	routes.UploadFileRoutes(router)
 	routes.VoteRoutes(router)
+	routes.ClosureRoutes(router)
 	router.Use(middleware.Authentication())
 
 	router.Run(":8080")

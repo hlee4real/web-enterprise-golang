@@ -19,5 +19,5 @@ type IdeasModel struct {
 	DownVote   int                `bson:"down_vote" json:"down_vote"`
 	CreatedAt  time.Time          `bson:"created_at" json:"created_at"`
 	UpdatedAt  time.Time          `bson:"updated_at" json:"updated_at"`
-	UserId     string             `bson:"user_id" json:"user_id"`
+	UserId     string             `bson:"user_id" json:"user_id"` //username day'
 }
