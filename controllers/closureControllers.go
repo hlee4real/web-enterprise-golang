@@ -22,6 +22,11 @@ func CreateClosure() gin.HandlerFunc {
 			return
 		}
 		closure.ID = primitive.NewObjectID()
+		//check if final closure is greater than first closure date
+		if closure.FinalClosure.Before(closure.FirstClosure) {
+			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
+			return
+		}
 		_, err := closureCollection.InsertOne(ctx, closure)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
@@ -76,6 +81,10 @@ func UpdateClosure() gin.HandlerFunc {
 			return
 		}
 		closure.ID = objectId
+		if closure.FinalClosure.Before(closure.FirstClosure) {
+			c.JSON(http.StatusBadRequest, APIResponse{Status: 0, Message: "Error", Data: nil})
+			return
+		}
 		if err := closureCollection.FindOneAndReplace(ctx, bson.M{"_id": objectId}, closure).Decode(&closure); err != nil {
 			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
 			return

@@ -16,7 +16,7 @@ type UsersModel struct {
 	Mobile       string             `bson:"mobile" json:"mobile"`
 	Role         string             `bson:"role" json:"role"`
 	Image        string             `bson:"image" json:"image"`
-	DepartmentId string             `bson:"department_id" json:"department_id"`
+	Department   string             `bson:"department" json:"department"`
 	CreatedAt    time.Time          `bson:"created_at" json:"created_at"`
 	UpdatedAt    time.Time          `bson:"updated_at" json:"updated_at"`
 	UserID       string             `bson:"user_id" json:"user_id"`

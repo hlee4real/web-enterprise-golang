@@ -12,7 +12,7 @@ func GetManagerEmail(department string) string {
 	defer cancel()
 	var manager models.UsersModel
 	//find with role manager and department
-	err := userCollection.FindOne(ctx, bson.M{"role": "Manager", "department_id": department}).Decode(&manager)
+	err := userCollection.FindOne(ctx, bson.M{"role": "Manager", "department": department}).Decode(&manager)
 	if err != nil {
 		return ""
 	}
