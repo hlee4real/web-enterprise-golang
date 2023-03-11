@@ -174,7 +174,7 @@ func DownVote() gin.HandlerFunc {
 			//get idea
 			var idea models.IdeasModel
 			ideaId, _ := primitive.ObjectIDFromHex(newVote.IdeaId)
-			err := ideaCollection.FindOne(ctx, bson.M{"_id": ideaId}).Decode(&idea)
+			err = ideaCollection.FindOne(ctx, bson.M{"_id": ideaId}).Decode(&idea)
 			if err != nil {
 				fmt.Println(err)
 				c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
