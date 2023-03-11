@@ -129,6 +129,25 @@ func DeleteIdea() gin.HandlerFunc {
 	}
 }
 
+func GetAllCommentOfAnIdea() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		id := c.Param("id")
+		var comments []models.CommentsModel
+		cursor, err := commentCollection.Find(ctx, bson.M{"idea_id": id})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, APIResponse{Status: 0, Message: "Error", Data: nil})
+			return
+		}
+		for cursor.Next(ctx) {
+			var comment models.CommentsModel
+			cursor.Decode(&comment)
+			comments = append(comments, comment)
+		}
+		c.JSON(http.StatusOK, APIResponse{Status: 1, Message: "Success", Data: comments})
+	}
+}
 func GetMostViewedIdeas() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
