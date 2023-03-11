@@ -27,6 +27,7 @@ func main() {
 	routes.VoteRoutes(router)
 	routes.ClosureRoutes(router)
 	routes.StatisticRoutes(router)
+	routes.ExportRoutes(router)
 	router.Use(middleware.Authentication())
 
 	router.Run(":8080")
