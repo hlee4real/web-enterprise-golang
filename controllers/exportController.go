@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"context"
 	"encoding/csv"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,6 +15,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"web-enterprise-backend/models"
 )
 
 func fileSize(filePath string) int64 {
@@ -75,9 +77,25 @@ func addFileToZip(zipWriter *zip.Writer, filePath string) error {
 
 func writeCSVRows(cursor *mongo.Cursor, csvWriter *csv.Writer) error {
 	for cursor.Next(context.Background()) {
-		var row []string
-		if err := cursor.Decode(&row); err != nil {
+		var idea models.IdeasModel
+		if err := cursor.Decode(&idea); err != nil {
 			return err
+		}
+		row := []string{
+			idea.ID.Hex(),
+			idea.Image,
+			idea.Title,
+			idea.Slug,
+			idea.Filename,
+			idea.Department,
+			idea.Content,
+			idea.Category,
+			strconv.Itoa(idea.Views),
+			strconv.Itoa(idea.UpVote),
+			strconv.Itoa(idea.DownVote),
+			idea.CreatedAt.String(),
+			idea.UpdatedAt.String(),
+			idea.Username,
 		}
 		if err := csvWriter.Write(row); err != nil {
 			return err
@@ -93,6 +111,7 @@ func ExportIntoCSV() gin.HandlerFunc {
 		// create CSV file
 		csvFile, err := os.Create(csvPath)
 		if err != nil {
+			fmt.Print("hihi", err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
@@ -103,6 +122,7 @@ func ExportIntoCSV() gin.HandlerFunc {
 		defer csvWriter.Flush()
 		cursor, err := ideaCollection.Find(ctx, bson.D{})
 		if err != nil {
+			fmt.Print("haha", err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			log.Fatal(err)
 		}
@@ -113,6 +133,7 @@ func ExportIntoCSV() gin.HandlerFunc {
 		}
 		// write data rows to CSV file
 		if err := writeCSVRows(cursor, csvWriter); err != nil {
+			fmt.Print("hehe", err)
 			c.AbortWithStatus(http.StatusInternalServerError)
 			return
 		}
